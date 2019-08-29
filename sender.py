@@ -8,13 +8,16 @@ from decouple import config
 def handle_error(send):
     prog = re.compile(r'<status>(.*?)</status>')
     status_code = int(prog.findall(send.text)[0])
-    if status_code != 0:
-        raise KeyError(f'Message not sent. Response code {status_code}')
+    try:
+        if status_code != 0:
+            raise ValueError
+        else:
+            print('Успешно доставлено')
+    except ValueError:
+        print(f'Message not sent. Response code {status_code}')
 
-    return "Successful"
 
-
-def send_sms(phone, message=None):
+def send_sms(phone, message=''):
     headers = {'Content-Type': 'application/xml'}
 
     xml = '''
