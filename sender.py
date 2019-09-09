@@ -17,25 +17,28 @@ def handle_error(send):
         print(f'Message not sent. Response code {status_code}')
 
 
-def send_sms(phone, message=''):
+def send_sms(phones, message=''):
+    global send
     headers = {'Content-Type': 'application/xml'}
-
-    xml = '''
-        <message>
-                <login>''' + config('NIKITA_SMS_LOGIN') + '''</login>
-                <pwd>''' + config('NIKITA_SMS_PASSWORD') + '''</pwd>
-                <id>''' + str(random.randrange(1, 1000)) + '''</id>
-                <sender>''' + config('NIKITA_SMS_SENDER') + '''</sender>
-                <text>''' + str(message) + '''</text>
-                <phones>
-                    <phone>''' + str(phone) + '''</phone>
-                </phones>
-            </message>    
+    for phone in phones:
+        print(phone)
+        xml = '''
+            <message>
+                    <login>''' + config('NIKITA_SMS_LOGIN') + '''</login>
+                    <pwd>''' + config('NIKITA_SMS_PASSWORD') + '''</pwd>
+                    <id>''' + str(random.randrange(1, 1000)) + '''</id>
+                    <sender>''' + config('NIKITA_SMS_SENDER') + '''</sender>
+                    <text>''' + str(message) + '''</text>
+                    <phones>
+                        <phone>''' + str(phone) + '''</phone>
+                    </phones>
+                </message>    
     
-    '''
-    xml = xml.encode('utf-8')
+        '''
+        xml = xml.encode('utf-8')
 
-    send = requests.post('https://smspro.nikita.kg/api/message', data=xml, headers=headers)
+        send = requests.post('https://smspro.nikita.kg/api/message', data=xml, headers=headers)
 
     return handle_error(send)
+
 
